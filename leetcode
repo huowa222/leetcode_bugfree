@@ -18,3 +18,172 @@ public:
         return ret;
     }
 };
+
+Decode String
+
+class Solution {
+public:
+    string decodeString(string s) {
+        string ret;
+        dfs(0, 0, s, ret);
+        return ret;
+    }
+    
+    void dfs(int start, int time, string s, string ret) {
+        
+        for(int i = start; i < s.size(); i++) {
+            if(s[i] <= '9' && s[i] >= '0') {
+                return dfs(i + 1, s[i] - '0', s, ret);
+            } else if(s[i] > '9' && s[i] < '0' && s[i] != '[' && s[i] != ']') {
+                for(int j = 0; j < time; j++) {
+                    ret += s[j];   
+                }
+            } else {
+                i++;
+            }
+        }     
+    }
+};
+
+
+Longest Increasing Subsequence
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        
+        int ret = 0;
+        vector<int> dp(nums.size(), 1);
+        
+        for(int i = 0; i < nums.size(); i++) {
+            for(int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+            }    
+            ret = max(ret, dp[i]);
+        }
+        
+        return ret;
+    }
+};
+
+79. Word Search
+
+class Solution {
+public:
+    bool exist(vector<vector<char>>& board, string word) {
+        return bfs(0, 0, 0, word, board);
+    }
+    
+    bool bfs(int index, int i, int j, string& word, vector<vector<char>>& board) {
+        int m = board.size();
+        int n = board[0].size();
+    
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                
+                if(board[i][j] = '0' || board[i][j] != word[index])
+                    continue; 
+                
+                if(board[i][j] == word[index] && index == word.size() - 1) 
+                    return true;
+                 
+                board[i][j] = '0';
+                
+                if(board[i][j] = word[index]) {
+                    if(index + 1 < word.size()) {
+                        if(i + 1 < m) 
+                            return bfs(index + 1, i + 1, j, word, board);
+                        if(i - 1 >= 0) 
+                            return bfs(index + 1, i - 1, j, word, board);
+                        if(j + 1 < n)
+                            return bfs(index + 1, i, j + 1, word, board);
+                        if(j - 1 >= 0)
+                            return bfs(index + 1, i, j - 1, word, board);
+                    }       
+                }
+            }
+        }
+        
+        return false;
+    }
+};
+
+class Solution {
+public:
+    bool exist(vector<vector<char>>& board, string word) {
+        return bfs(0, 0, 0, word, board);
+    }
+    
+    bool bfs(int index, int i, int j, string& word, vector<vector<char>>& board) {
+        int m = board.size();
+        int n = board[0].size();
+        
+        if(index >= word.size() || i < 0 || i > m - 1 || j < 0 || j > n -1 ) {
+            return false;
+        }  
+    
+        if(board[i][j] = '0' || board[i][j] != word[index])
+            return false; 
+                
+        if(board[i][j] == word[index] && index == word.size() - 1) 
+            return true;
+                
+        if(board[i][j] = word[index]) {
+            board[i][j] = '0';
+            bool flag = bfs(index + 1, i + 1, j, word, board) || bfs(index + 1, i - 1, j, word, board) || bfs(index + 1, i, j + 1, word, board) || return bfs(index + 1, i, j - 1, word, board);
+            return flag;
+            board[i][j] = word[index];
+        }       
+                
+        return false;
+    }
+};
+
+word break 
+
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> set(wordDict.begin(), wordDict.end());
+        bool ret = dsf(s, 0, set);
+        return ret;
+    }
+    
+    bool dfs(string s, int index, unordered_set<string>& set) {
+        
+        if(index == s.size() - 1) {
+            return true;
+        }
+        
+        for(int i = index; i < s.size(); i++) {
+            if(set.count(s.subStr(index, i - 1)) && dfs(s, i + 1, set)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+};
+
+word break DP
+
+class solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> wordSet(wordDict.begin(), wordDict.end());
+        bool dp[s.size()];
+        dp[0] = true;
+        
+        for(int i = 0; i < s.size(); i++) {
+            for(int j = 0; j < i; j++) {
+                dp[i] = wordSet.count(s.substr(j, i - j)) && dp[j];
+                if (dp[i])
+                    break;
+            }
+        }
+        return dp[s.size() - 1];
+    }
+}
+
