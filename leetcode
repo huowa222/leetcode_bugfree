@@ -187,3 +187,182 @@ public:
     }
 }
 
+
+valid binary seavalid binary search treerch tree
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        return dfs(root);
+    }
+    
+    bool dfs(TreeNode *root) {
+        if(!root) 
+            return true;
+        if(root->left && root->val < root->left->val)
+            return false;
+        if(root->right && root->val > root->right->val)
+            return false;
+            
+        return dfs(root->left) && dfs(root->right);
+    }
+};
+
+
+serialize and deserialize 
+
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        ostringstream ret;
+        dfs(root, ret);
+        return ret.str();
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        istringsstream in(data);
+        return deserialize(in);
+    }
+    
+private:
+    
+    void dfs(TreeNode *root, ostringstream& ret) {
+        if(!root)
+            ret << "#";
+        
+        ret << root->val;
+        
+        if(!root->left) {
+            dfs(root->left, ret);
+        }
+        
+        if(!root->right) {
+            dfs(root->right, ret);
+        }
+            
+    }
+    
+    TreeNode* deserialize(istringsstream& data) {
+        if(data[index] == '#') {
+            return NULL;
+        }
+        
+        string tmp;
+        data >> tmp;
+        TreeNode *root = new TreeNode(atoi(tmp));
+        root->left = deserialize(data);
+        root->right = deserialize(data);
+        return root;
+    }
+};
+
+
+perfect square
+
+class Solution {
+public:
+    int numSquares(int n) {
+
+        vector<int> dp(n + 1, 0);
+        dp[0] = 0;
+        dp[1] = 1;
+        
+        for(int i = 2; i <= n; i++) {
+          for(int j = 1; j <= i; j++) {
+            dp[i] = min(dp[i], dp[i - (j * j)] + 1);
+          }  
+        } 
+        
+        return dp[n];
+    }
+};
+
+maximum product subarray // sign integer overflow...
+
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        
+        int ret = nums[0];
+        int dp_max[nums.size()];
+        int dp_min[nums.size()];
+        
+        dp_max[0] = nums[0];
+        dp_min[0] = nums[0];
+        
+        for(int i = 1; i < nums.size(); i++) {
+            dp_max[i] = max(dp_max[i - 1] * nums[i], max(dp_min[i] * nums[i], nums[i]));
+            dp_min[i] = min(dp_min[i - 1] * nums[i], min(dp_max[i] * nums[i], nums[i]));
+            ret = max(dp_max[i], ret);
+        }
+        
+        return ret;
+    }
+};
+
+
+maximum square
+
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        
+        int max_len = matrix[0][0] - '0';
+        int m = matrix.size();
+        int n = matrix[0].size();
+        vector<vector<int>> dp(m, vector<int>(n, 0));
+        
+        for(int i = 0; i < m; i++) {
+            dp[i][0] = matrix[i][0] - '0';
+        }
+        
+        for(int i = 0; i < n; i++) {
+            dp[0][i] = matrix[0][i] - '0';
+        }
+                
+        for(int i = 1; i < m; i++) {
+            for(int j = 1; j < n; j++) {
+                if(matrix[i][j] == '0') {
+                    dp[i][j] = 0;
+                    continue;
+                }
+                    
+                dp[i][j] = min(min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+                max_len = max(max_len, dp[i][j]);
+            }
+        }
+        
+        return max_len * max_len;
+    }
+};
+
+longest substring without repeating characters
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        
+        int ret = 0;
+        int left = -1;
+        unordered_map<char, int> char2index;
+        int dp[s.size()] = {0};
+        dp[0] = 1;
+        
+        for(int i = 1; i < s.size(); i++) {    
+            if(!char2index.count(s[i])) {
+                dp[i] = dp[i - 1] + 1;
+            } else {
+                if(char2index[s[i]] > left) {
+                    dp[i] = i - char2index[s[i]];
+                    left = char2index[s[i]];
+                } 
+            }   
+            char2index[s[i]] = i;
+            ret = max(ret, dp[i]);
+        }
+        
+        return ret;
+    }
+};
