@@ -366,3 +366,130 @@ public:
         return ret;
     }
 };
+
+
+generate parenthese
+
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> ret;
+        string tmp; 
+        dfs(n, 0, 0, ret, tmp);
+        return ret;
+    }
+    
+    void dfs(int n, int left, int right, vector<string>& vec, string tmp) {
+        if(left < right) {
+            return;
+        }
+        
+        if(left == n && right == n) {
+            vec.push_back(tmp);
+			return;
+        }
+        
+        if(left + 1 >= n) 
+            dfs(n, left + 1, right, vec, tmp + "(");
+        if(right + 1 >= n)
+            dfs(n, left, right + 1, vec, tmp + ")");
+    }
+};
+
+construct binary tree from preorder and inorder traversal
+
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        return dfs(preorder, 0, preorder.size() - 1, inorder, 0, inorder.size() - 1);
+    }
+    
+private:   
+    int find_len(vector<int> vec, int start, int target) {
+        int len = 1;
+        
+        for(int i = start; i < vec.size(); i++) {
+            if(vec[i] == target) {
+                return len;
+            }
+            len++;
+        }
+        
+        return -1;
+    }
+    
+    TreeNode* dfs(vector<int>& preorder, int pre_start, int pre_end, vector<int>& inorder, int in_start, int in_end) {
+        if(pre_start > pre_end || in_start > in_end) {
+            return NULL;
+        }
+        
+        TreeNode *root = new TreeNode(preorder[pre_start]);
+        int len = find_len(inorder, in_start, preorder[pre_start]);
+        root->left = dfs(preorder, pre_start + 1, pre_start + len - 1, inorder, in_start, in_start + len - 1);
+        root->right = dfs(preorder, pre_start + len + 1, pre_end, inorder, in_start + len + 1, in_end);   
+        return root;
+    }
+    
+};
+
+convert BST to greater tree
+
+class Solution {
+public:
+    TreeNode* convertBST(TreeNode* root) {
+        int sum = 0;
+        dfs(root, sum);
+        return root;
+    }
+    
+private:    
+    void dfs(TreeNode *root, int sum) {
+        
+        if(!root) {
+            return;
+        }
+        
+        //if(root->right)
+            dfs(root->right, sum);
+        
+        root->val += sum;
+        sum = root->val;
+        
+        //if(root->left)
+            dfs(root->left, sum);
+    }
+};
+
+
+level order traversal 
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        if(!root) return {};
+        
+        vector<vector<int>> ret;
+        queue<TreeNode*> q;
+        q.push(root);
+        
+        while(!q.empty()) {
+            vector<int> level;
+            for(int i = 0; i < q.size(); ++i) {
+                TreeNode *tmp = q.front();
+                q.pop();
+                level.push_back(tmp->val);
+                
+                if(tmp->left)
+                    q.push(tmp->left);
+                if(tmp->right)
+                    q.push(tmp->right);
+            }
+            
+            ret.push_back(level);
+        }   
+        
+        return ret;
+    }
+};
+
+
