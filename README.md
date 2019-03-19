@@ -1,28 +1,3 @@
 # leetcode_bugfree
 
-Subarray Sum Equals K 
-class Solution {
-public:
-    int subarraySum(vector<int>& nums, int k) {
-        int ret = 0;
-        int sums[nums.size()];
-        sums[0] = nums[0];
-        for(int i = 1; i < nums.size(); i++) {
-            sums[i] = sums[i -1] + nums[i];
-        }
-        
-        for(int i = 0; i < nums.size(); i++) {
-            //if(nums[i] == k) {
-                //ret++;
-            //}
-            
-            for(int j = 0; j < i; j++) {
-                if(k == sums[i] - sums[i]) {
-                    ret++;
-                }
-            }
-        }
-        
-        return ret;
-    }
-};
+Thess are the codes written by me but not yet summited, there might be some bugs in it. if you have interest in helping me bug free and getting through the leetcode, pls leave me comment to show correction marked with the problem Number.
