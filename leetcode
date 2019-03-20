@@ -520,4 +520,108 @@ public:
     }
 };
 
+124. Binary Tree Maximum Path Sum
 
+class Solution {
+public:
+    int maxPathSum(TreeNode* root) {
+        int sum = INT_MIN;
+        return dfs(root, sum);
+    }
+    
+private:
+    int dfs(TreeNode *root, int& sum) {
+        if(!root)
+            return 0;
+        
+        int l = dfs(root->left, sum);
+        int r = dfs(root->right, sum);
+        
+        int val = max(root->val, max(root->val + r + l, root->val + max(l, r)));
+        
+        if(val >= sum)
+            sum = val;
+        return sum;
+    }
+};
+
+
+Jump game II
+
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int dp[nums.size()] = {INT_MAX};
+        dp[0] = 0;
+        
+        for(int i = 1; i < nums.size(); i++) {
+            for(int j = 0; j < i; j++) {
+                if(i - j <= nums[j]) {
+                    dp[i] = min(dp[j] + 1, dp[i]);
+                } 
+            }
+        }
+        return dp[nums.size() - 1];
+    }
+};
+
+
+path sum III
+
+class Solution {
+public:
+    int pathSum(TreeNode* root, int sum) {
+        if(!root)
+            return 0;        
+        return dfs(root, sum) + dfs(root->left, sum) + dfs(root->right, sum);   
+    }
+    
+    int dfs(TreeNode *root, int sum) {
+        if(!root) {
+            return 0;
+        }
+        
+        return (sum == root->val) + dfs(root->left, sum - root->val) + dfs(root->right, sum - root->val);
+    }
+};
+
+binary tree maximum path sum
+
+class Solution {
+public:
+    int maxPathSum(TreeNode* root) {
+        return max(dfs(root), max(dfs(root->left), dfs(root->right)));
+    }
+    
+private:
+    int dfs(TreeNode *root) {
+        if(!root)
+            return 0;
+        
+        unsigned int l = dfs(root->left);
+        unsigned int r = dfs(root->right);
+        
+        return max(root->val + r + l, root->val + max(l, r));   
+    }
+};
+
+
+minimum path sum
+
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& grid) {
+        int m = grid.size();   
+        int n = grid[0].size();
+        int dp[m] = {INT_MAX};
+        dp[0] = 0;// grid[0][0];
+        
+        for(int i = 0; i < m; i++) {
+            dp[0] += grid[i][0];
+            for(int j = 1; j < n; j++) {
+                dp[j] = grid[i][j] + min(dp[j - 1], dp[j]);
+            }
+        } 
+        return dp[m - 1];
+    }
+};
