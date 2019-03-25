@@ -625,3 +625,301 @@ public:
         return dp[m - 1];
     }
 };
+
+palindromic substring
+
+class Solution {
+public:
+    int countSubstrings(string s) {
+        int ret = 0;
+        bool dp[s.size()][s.size()] = {false};
+        dp[0][0] = true;
+        
+        for(int i = 0; i < s.size(); i++) {
+            for(int j = 0; j <= i; j++) {
+                if((s[j] == s[i]) && (i - j < 2 || dp[j + 1][i - 1])) {
+                    ret += 1;
+                }
+            }
+        }
+        
+        return ret;
+    }
+};
+
+number of island // i have already check, my original code is almost the same as the leetcode submmited code, why???
+
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        int ret = 0;
+        int m = grid.size();
+        int n = grid[0].size();
+        
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(grid[i][j] == '1') {
+                    dfs(grid, i, j);
+                    ret++;
+                }
+            }
+        }
+        return ret;
+    }
+    
+    void dfs(vector<vector<char>>& grid, int x, int y) {
+        int m = grid.size();
+        int n = grid[0].size();
+        if(x < 0 || x >= m || y < 0 || y >= n || grid[x][y] == '0') {
+            return;
+        }
+        
+        grid[x][y] = '0';
+        dfs(grid, x + 1, y);
+        dfs(grid, x - 1, y);
+        dfs(grid, x, y + 1);
+        dfs(grid, x, y - 1);
+    }
+};
+
+min stack 
+
+class MinStack {
+public:
+    /** initialize your data structure here. */
+    MinStack() {
+        
+    }
+    
+    void push(int x) {
+        s_.push(x);
+        if(min_s_.empty() && x < min_s_.top()) {
+            min_s_.push(x);
+        }
+    }
+    
+    void pop() {
+        int cur = s_.top();
+        s_.pop();
+        if(!min_s_.empty() && cur == min_s_.top()) {
+            min_s_.pop();
+        } 
+    }
+    
+    int top() {
+        return s_.top();
+    }
+    
+    int getMin() {
+        return min_s_.top();
+    }
+    
+private:
+    stack<int> s_;
+    stack<int> min_s_;
+};
+
+sort List
+
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        ListNode *p = head;
+        ListNode *q = head;
+        
+        if(!head || !head->next)
+            return head;
+        
+        while(q && q->next) {
+            p = p->next;
+            q = q->next->next;
+        }
+        
+        ListNode *tmp = p;
+        p = p->next;
+        tmp->next = NULL;
+        
+        ListNode *left = sortList(head);
+        ListNode *right = sortList(p);
+        
+        return sortCore(left, right);
+    }
+    
+    ListNode *sortCore(ListNode *left, ListNode *right) {
+        if(!left || !right) {
+            return left ? left: right;
+        }
+        
+        ListNode *pre = new ListNode(-1);
+        ListNode *dummy = pre;
+        
+        while(left && right) {
+            if(left->val < right->val) {
+                pre->next = left;
+                left = left->next;
+            }else {
+                pre->next = right;
+                right = right->next;
+            }
+            pre = pre->next;
+        }
+        
+        pre->next = left? left: right;
+        
+        return dummy->next;
+    }
+    
+};
+
+top K frequent element
+
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        vector<int> ret;
+        unordered_map<int,int> dic;
+        priority_queue<pair<int, int> > q;
+        
+        for(int i = 0; i < nums.size(); i++) {
+            nums[i]++;
+        }
+        
+        auto itr = dic.begin();
+        for(; itr != dic.end(); itr++) {
+            q.push(make_pair(itr->second, itr->first));
+        }
+        
+        int cnt = 0;
+        while(!q.empty()) {
+            if(++cnt > k)
+                break;
+            ret.push_back(q.top().second);
+            q.pop();
+        }
+        
+        return ret;
+    }
+};
+
+230. Kth Smallest Element in a BST
+
+class Solution {
+public:
+    int kthGiggest(TreeNode* root, int k) {
+        int ret = 0;
+        inOrderTraversal(root, k, ret);
+        return ret;
+    }
+    
+    void inOrderTraversal(TreeNode *root, int& k, int& ret) {
+        if(!root)
+            return;
+        inOrderTraversal(root->right, k, ret);
+        if(--k == 0) {
+            ret = root->val;
+        }
+        inOrderTraversal(root->left, k, ret);
+    }
+    
+    int kthSmallest(TreeNode* root, int k) {
+        int ret = 0;
+        inOrderTraversal2(root, k, ret);
+        return ret;
+    }
+    
+    void inOrderTraversal2(TreeNode *root, int& k, int& ret) {
+        if(!root)
+            return;
+        
+        inOrderTraversal(root->left, k, ret);
+        if(--k == 0) {
+            ret = root->val;
+        }
+        inOrderTraversal(root->right, k, ret);
+    }
+};
+
+
+basic caculator
+
+class Solution {
+public:
+    int calculate(string s) {
+        int ret = 0;
+        stack<char> stk;
+        
+        for(int i = 0; i < s.size(); i++) {
+            if(!stk.empty() && (stk.top() == '*' || stk.top() == '/')) {
+                char operators = stk.top(); stk.pop();
+                char val1 = stk.top(); stk.pop();
+                stk.push(compute(val1, s[i], operators));
+            }
+            
+            stk.push(s[i]);
+        }
+        
+        while(!stk.empty()) {
+            char val2 = stk.top(); stk.pop();
+            char operators = stk.top(); stk.pop();
+            char val1 = stk.top(); stk.pop();
+            stk.push(compute(val1, val2, operators));
+        }
+        
+        return ret;
+    }
+    
+    char compute(char val1, char val2, char operators) {
+        int ret = 0;
+        switch(operators) {
+            case '+':
+                ret = val1 - '0' + val2 - '0';
+                break;
+            case '-':
+                ret = val1 - '0' - val2 - '0';
+                break;
+            case '*':
+                ret = (val1 - '0') * (val2 - '0');
+                break;
+            case '/':
+                ret = (val1 - '0') / (val2 - '0');
+                break;
+            default:
+                break;
+        }
+        return '0' + ret;
+    }
+    
+    
+    int calculate2(string s) {
+        stack<int> myStack;
+        char sign = '+';
+        int res = 0, tmp = 0;
+        for (unsigned int i = 0; i < s.size(); i++) {
+            if (isdigit(s[i]))
+                tmp = 10*tmp + s[i]-'0';
+            if (!isdigit(s[i]) && !isspace(s[i]) || i == s.size()-1) {
+                if (sign == '-')
+                    myStack.push(-tmp);
+                else if (sign == '+')
+                    myStack.push(tmp);
+                else {
+                    int num;
+                    if (sign == '*' )
+                        num = myStack.top()*tmp;
+                    else
+                        num = myStack.top()/tmp;
+                    myStack.pop();
+                    myStack.push(num);
+                } 
+                sign = s[i];
+                tmp = 0;
+            }
+        }
+        while (!myStack.empty()) {
+            res += myStack.top();
+            myStack.pop();
+        }
+        return res;
+    }
+
+}; 
